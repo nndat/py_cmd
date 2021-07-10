@@ -3,9 +3,10 @@
 Implement ls command with python code.
 """
 
-import click
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime
+from datetime import timezone
+import click
 
 
 def _in_dir(dirpath=".", recursive=False, include_hidden=False):
@@ -27,14 +28,23 @@ def _in_dir(dirpath=".", recursive=False, include_hidden=False):
                 child_path = str(child.absolute())
                 return _in_dir(child_path)
             yield child
+    return None
 
 
 def _show_detail(dir_infos):
     """
     Display childrent in directory with detail infos.
     """
-    detail_template = "{name:<30}{size:<10}{owner:<10}{group:<10}{last_modificated:<10}"
-    header = detail_template.format(name="Name", size="Size", owner="Owner", group="Group", last_modificated="Last Modificated")
+    detail_template = \
+        "{name:<30}{size:<10}{owner:<10}{group:<10}{last_modificated:<10}"
+
+    header = detail_template.format(
+        name="Name",
+        size="Size",
+        owner="Owner",
+        group="Group",
+        last_modificated="Last Modificated"
+    )
 
     print(header)
     for child in dir_infos:
@@ -82,8 +92,8 @@ def ls_command(dirpath, *args, **kwargs):
         include_hidden = kwargs.get('all')
         dir_infos = _in_dir(dirpath, include_hidden=include_hidden)
         _display_dir_infos(dir_infos, show_detail=detail)
-    except FileNotFoundError as e:
-        print(e)
+    except FileNotFoundError as message:
+        print(message)
 
 
 if __name__ == '__main__':
