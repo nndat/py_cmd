@@ -8,19 +8,25 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 
-def _in_dir(dirpath=".", recursive=False):
+def _in_dir(dirpath=".", recursive=False, include_hidden=False):
     """
     List all file and directory in dirpath (default is current directory)
     """
     directory = Path(dirpath)
     if not directory.exists():
         raise FileNotFoundError("No such file or directory")
-    
-    for child in directory.iterdir():
-        if child.is_dir() and recursive:
-            child_path = str(child.absolute())
-            return _in_dir(child_path)
-        yield child
+
+    if directory.is_file():
+        yield directory
+    else:
+        for child in directory.iterdir():
+            if child.name.startswith('.') and not include_hidden:
+                continue
+
+            if child.is_dir() and recursive:
+                child_path = str(child.absolute())
+                return _in_dir(child_path)
+            yield child
 
 
 def _show_detail(dir_infos):
@@ -66,12 +72,15 @@ def _display_dir_infos(dir_infos, show_detail=True):
 @click.command()
 @click.argument('dirpath', default=".", type=str)
 @click.option('-l', '--detail', is_flag=True)
-def ls_command(dirpath, detail, *args, **kwargs):
+@click.option('-a', '--all', is_flag=True)
+def ls_command(dirpath, *args, **kwargs):
     """
     List information about the dirpath (the current directory by default).
     """
     try:
-        dir_infos = _in_dir(dirpath)
+        detail = kwargs.get('detail')
+        include_hidden = kwargs.get('all')
+        dir_infos = _in_dir(dirpath, include_hidden=include_hidden)
         _display_dir_infos(dir_infos, show_detail=detail)
     except FileNotFoundError as e:
         print(e)
