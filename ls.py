@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 """
-Implement ls command with python code.
+Implement `ls` command with python code.
 """
 
 from pathlib import Path
