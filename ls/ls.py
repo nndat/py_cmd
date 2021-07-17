@@ -26,7 +26,7 @@ def _in_dir(dirpath=".", recursive=False, include_hidden=False):
 
             if child.is_dir() and recursive:
                 child_path = str(child.absolute())
-                return _in_dir(child_path)
+                yield from _in_dir(child_path, recursive=recursive)
             yield child
     return None
 
