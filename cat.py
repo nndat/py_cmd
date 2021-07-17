@@ -8,8 +8,11 @@ import click
 
 @click.command()
 @click.argument('files', type=click.File('r'), nargs=-1)
-@click.option('-n', '--number', is_flag=True)
+@click.option('-n', '--number', is_flag=True, help="number all output lines")
 def cat_cmd(files, number):
+    """
+    cat - concatenate files and print on the standard output
+    """
     line_count = 1
     for _file in files:
         for line in _file:
