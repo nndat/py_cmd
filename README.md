@@ -17,3 +17,8 @@ cat | Done
 tail |
 ping |
 mkdir |
+rm |
+rmdir |
+find |
+cal |
+sort |
